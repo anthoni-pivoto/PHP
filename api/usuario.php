@@ -21,7 +21,7 @@ switch ($method) {
     case 'POST':
         $dados = json_decode(file_get_contents("php://input"));
         if (isset($dados->nm_usuario) && isset($dados->email_usuario) && isset($dados->pwd_usuario)) {
-            $usuario = new Usuario(null, $dados->nm_usuario, $dados->email_usuario, $dados->pwd_usuario);
+            $usuario = new Usuario( $dados->nm_usuario, $dados->email_usuario, $dados->pwd_usuario);
             $sucesso = $controller->criar($usuario);
             if ($sucesso) {
                 http_response_code(201); // Created
@@ -36,8 +36,15 @@ switch ($method) {
         break;
 
     case 'DELETE':
-        if (isset($_GET['id'])) {
-            echo json_encode(["sucesso" => $controller->deletar($_GET['id'])]);
+        $dados = json_decode(file_get_contents("php://input"));
+        if (isset($dados->id_usuario)) {
+            $sucesso = $controller->deletar($dados->id_usuario);
+            //echo json_encode(["sucesso" => $controller->deletar($_GET['id'])]);
+            if ($sucesso) {
+                echo json_encode(["sucesso" => true]);
+            } else {
+                http_response_code(500);
+            }
         } else {
             echo json_encode(["erro" => "Informe o ID"]);
         }

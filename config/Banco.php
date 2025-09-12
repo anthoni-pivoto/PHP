@@ -1,8 +1,8 @@
 <?php
 class Banco {
-    private $host = "200.19.1.18"; 
-    private $db   = "anthonimigliavasca"; 
-    private $user = "anthonimigliavasca";
+    private $host = "192.168.20.18"; 
+    private $db   = "anthonimigliavasca";  
+    private $user = "anthonimigliavasca"; 
     private $port = "5432";
     private $pass = "123456";
     public $conn;
