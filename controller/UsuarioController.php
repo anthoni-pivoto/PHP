@@ -14,13 +14,13 @@ class UsuarioController
 
     public function listar()
     {
-        $sql = "SELECT *  FROM tb_usuario";
+        $sql = "SELECT * FROM tb_usuario";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function criar($usuario)
+   public function criar($usuario)
     {
         try {
             $sql = "INSERT INTO tb_usuario (id_usuario, s_nome, s_email, s_senha) 
@@ -39,11 +39,36 @@ class UsuarioController
         }
     }
 
+    public function atualizar($usuario)
+    {
+        try {
+            $sql = "UPDATE tb_usuario 
+                       SET s_nome = :nome, 
+                           s_email = :email,
+                           s_email_contato = :email_contato, 
+                           i_numero_telefone = :numero_telefone
+                     WHERE id_usuario = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(":nome", $usuario->nm_usuario);
+            $stmt->bindParam(":email", $usuario->email_usuario);
+            $stmt->bindParam(":email_contato", $usuario->email_contato);
+            $stmt->bindParam(":numero_telefone", $usuario->numero_telefone);
+            $stmt->bindParam(":id", $usuario->id_usuario, PDO::PARAM_INT);
+
+            $stmt->execute();
+            // Retornar true apenas se realmente atualizou algo
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            echo json_encode(["erro" => "Falha no update: " . $e->getMessage()]);
+            return false;
+        }
+    }
+
     public function deletar($id)
     {
         $sql = "DELETE FROM tb_usuario WHERE id_usuario = :id";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 }
